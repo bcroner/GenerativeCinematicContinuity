@@ -1,0 +1,17 @@
+{
+  "character_id": "psycho_town_miller",
+  "biographical_data": {
+    "name": "Officer Miller",
+    "assigned_role": "protagonist",
+    "core_flaw": "Paranoia"
+  },
+  "initial_narrative_state": {
+    "starting_stability_index": 0.65,
+    "want_vector": "Expose the town conspiracy",
+    "need_vector": "Accept personal loss"
+  },
+  "custom_formula_weights": {
+    "trauma_multiplier": 1.8,
+    "redemption_multiplier": 0.5
+  }
+}
