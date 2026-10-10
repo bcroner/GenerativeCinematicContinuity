@@ -129,13 +129,11 @@
 </head>
 <body>
 
-    <!-- Drag and Drop Workspace with Line Routing Layer -->
     <div id="canvas-container">
         <svg id="svg-canvas">
             <line id="connection-line" x1="0" y1="0" x2="0" y2="0" stroke="rgba(57, 255, 20, 0.5)" stroke-width="3" stroke-dasharray="5,5" />
         </svg>
 
-        <!-- Node 1: Officer Miller -->
         <div class="node-block" id="node-miller" style="top: 120px; left: 50px;">
             <div class="node-header">
                 <span>CHARACTER NODE</span>
@@ -160,7 +158,6 @@
             </div>
         </div>
 
-        <!-- Node 2: Emma Watson -->
         <div class="node-block" id="node-emma" style="top: 220px; left: 450px;">
             <div class="node-header">
                 <span>CHARACTER NODE</span>
@@ -186,7 +183,6 @@
         </div>
     </div>
 
-    <!-- Inspector Output Panel -->
     <div id="inspector-panel">
         <h3>GCC GRAPH INSPECTOR</h3>
         <p style="font-size: 11px; color: #888; margin-top: 0;">Maintains explicit synchronization metrics across inter-character timelines.</p>
@@ -226,7 +222,6 @@
             const nodeB = document.getElementById('node-emma');
             const line = document.getElementById('connection-line');
 
-            // Draw line center anchor connections between nodes
             if (nodeA && nodeB && line) {
                 const rA = nodeA.getBoundingClientRect();
                 const rB = nodeB.getBoundingClientRect();
@@ -248,7 +243,6 @@
                 }
             }
 
-            // Build aggregated tracking payload
             const manifest = {
                 "timestamp_epoch": Date.now(),
                 "active_graph_connections": document.getElementById('link-miller').value !== 'none' ? [{ "source": "psycho_town_miller", "target": "psycho_town_emma", "type": "relational_influence_bridge" }] : [],
@@ -266,3 +260,10 @@
                     }
                 ]
             };
+            document.getElementById('json-output').innerText = JSON.stringify(manifest, null, 2);
+        }
+
+        updateSystemGraph();
+    </script>
+</body>
+</html>
