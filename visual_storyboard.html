@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCC Visual Storyboard Workspace</title>
+    <style>
+        :root {
+            --bg-dark: #121214;
+            --panel-bg: #1c1c1f;
+            --node-bg: #252529;
+            --accent: #39ff14;
+            --border: #333338;
+            --text: #e2e2e8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #canvas-area {
+            flex: 1;
+            position: relative;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: auto;
+        }
+
+        .node-block {
+            position: absolute;
+            width: 280px;
+            background: var(--panel-bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            cursor: move;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .node-header {
+            background: var(--node-bg);
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            color: var(--accent);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .node-body {
+            padding: 12px;
+        }
+
+        .control-group {
+            margin-bottom: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .control-group input[type="text"], .control-group select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 6px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        #inspector-panel {
+            width: 360px;
+            background: var(--panel-bg);
+            border-left: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        #json-output {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-family: "Courier New", Courier, monospace;
+            padding: 12px;
+            border-radius: 6px;
+            resize: none;
+            font-size: 12px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        h3 { margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Interactive Node Editor Area -->
+    <div id="canvas-area">
+        <div class="node-block" id="miller-node" style="top: 100px; left: 100px;">
+            <div class="node-header">
+                <span>CHARACTER NODE</span>
+                <span style="font-size: 10px; color: #888;">ID: 01</span>
+            </div>
+            <div class="node-body">
+                <div class="control-group">
+                    <label>Identity Name</label>
+                    <input type="text" id="char-name" value="Officer Miller" oninput="updateProfilePayload()">
+                </div>
+                <div class="control-group">
+                    <label>Role Class</label>
+                    <select id="char-role" onchange="updateProfilePayload()">
+                        <option value="protagonist">Protagonist</option>
+                        <option value="antagonist">Antagonist</option>
+                        <option value="companion">Companion</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Volatility Scaling Slider</label>
+                    <input type="range" id="char-volatility" min="0.0" max="1.0" step="0.05" value="0.40" oninput="updateProfilePayload()">
+                </div>
+                <div class="control-group">
+                    <label>Trauma Formula Weight</label>
+                    <input type="range" id="char-trauma" min="0.5" max="3.0" step="0.1" value="1.8" oninput="updateProfilePayload()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Real-Time Schema Inspector Side Panel -->
+    <div id="inspector-panel">
+        <h3>GCC SCHEMA GENERATOR</h3>
+        <p style="font-size: 12px; color: #888; margin-top: 0;">Adjust sliders and fields on the canvas nodes to view live database manifest compilation updates.</p>
+        <label style="font-size: 11px; font-weight: bold; margin-bottom: 6px; display: block;">COMPILED CHARACTER MATRIX PROFILE</label>
+        <div id="json-output" contenteditable="false"></div>
+    </div>
+
+    <script>
+        // Implements simple drag-and-drop mechanics for node blocks
+        const node = document.getElementById('miller-node');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        node.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+            isDragging = true;
+            offsetX = e.clientX - node.getBoundingClientRect().left;
+            offsetY = e.clientY - node.getBoundingClientRect().top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            node.style.left = `${e.clientX - offsetX}px`;
+            node.style.top = `${e.clientY - offsetY}px`;
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Compiles visual interface properties down into our rigid GCC backend schema
+        function updateProfilePayload() {
+            const name = document.getElementById('char-name').value;
+            const role = document.getElementById('char-role').value;
+            const volatility = parseFloat(document.getElementById('char-volatility').value);
+            const trauma = parseFloat(document.getElementById('char-trauma').value);
+
+            const profileSchema = {
+                "character_id": name.toLowerCase().replace(/\s+/g, '_'),
+                "biographical_data": {
+                    "name": name,
+                    "assigned_role": role,
+                    "core_flaw": "Dynamic Core Flaw"
+                },
+                "psychological_traits_matrix": {
+                    "isolation_index": 0.5,
+                    "intellectual_curiosity_weight": 0.5,
+                    "volatility_rating": volatility
+                },
+                "physical_integrity_constraints": {
+                    "hand_wrist_joint_integrity": 1.0,
+                    "cardio_reserve_index": 1.0
+                },
+                "narrative_alignment_vectors": {
+                    "starting_stability_index": 1.0,
+                    "manifest_want_declaration": "Generated from visual storyboard node.",
+                    "latent_need_matrix": "Implicit structural optimization driver."
+                },
+                "custom_formula_weights": {
+                    "trauma_multiplier": trauma,
+                    "redemption_multiplier": 0.5
+                }
+            };
+
+            document.getElementById('json-output').innerText = JSON.stringify(profileSchema, null, 2);
+        }
+
+        // Initialize output view on workspace startup
+        updateProfilePayload();
+    </script>
+</body>
+</html>
