@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GCC Visual Storyboard Workspace</title>
+    <title>GCC Multi-Character Storyboard Canvas</title>
     <style>
         :root {
             --bg-dark: #121214;
@@ -12,6 +12,7 @@
             --accent: #39ff14;
             --border: #333338;
             --text: #e2e2e8;
+            --line-color: rgba(57, 255, 20, 0.4);
         }
 
         body {
@@ -25,13 +26,23 @@
             overflow: hidden;
         }
 
-        #canvas-area {
+        #canvas-container {
             flex: 1;
             position: relative;
             background-color: var(--bg-dark);
             background-image: radial-gradient(var(--border) 1px, transparent 1px);
             background-size: 20px 20px;
-            overflow: auto;
+            overflow: hidden;
+        }
+
+        #svg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .node-block {
@@ -90,13 +101,14 @@
         }
 
         #inspector-panel {
-            width: 360px;
+            width: 380px;
             background: var(--panel-bg);
             border-left: 2px solid var(--border);
             display: flex;
             flex-direction: column;
             padding: 16px;
             box-sizing: border-box;
+            z-index: 20;
         }
 
         #json-output {
@@ -107,8 +119,7 @@
             font-family: "Courier New", Courier, monospace;
             padding: 12px;
             border-radius: 6px;
-            resize: none;
-            font-size: 12px;
+            font-size: 11px;
             white-space: pre-wrap;
             overflow-y: auto;
         }
@@ -118,9 +129,14 @@
 </head>
 <body>
 
-    <!-- 1. Interactive Node Editor Area -->
-    <div id="canvas-area">
-        <div class="node-block" id="miller-node" style="top: 100px; left: 100px;">
+    <!-- Drag and Drop Workspace with Line Routing Layer -->
+    <div id="canvas-container">
+        <svg id="svg-canvas">
+            <line id="connection-line" x1="0" y1="0" x2="0" y2="0" stroke="rgba(57, 255, 20, 0.5)" stroke-width="3" stroke-dasharray="5,5" />
+        </svg>
+
+        <!-- Node 1: Officer Miller -->
+        <div class="node-block" id="node-miller" style="top: 120px; left: 50px;">
             <div class="node-header">
                 <span>CHARACTER NODE</span>
                 <span style="font-size: 10px; color: #888;">ID: 01</span>
@@ -128,96 +144,125 @@
             <div class="node-body">
                 <div class="control-group">
                     <label>Identity Name</label>
-                    <input type="text" id="char-name" value="Officer Miller" oninput="updateProfilePayload()">
+                    <input type="text" id="name-miller" value="Officer Miller" oninput="updateSystemGraph()">
+                </div>
+                <div class="control-group">
+                    <label>Volatility Rating</label>
+                    <input type="range" id="vol-miller" min="0.0" max="1.0" step="0.05" value="0.40" oninput="updateSystemGraph()">
+                </div>
+                <div class="control-group">
+                    <label>Interaction Influence Target</label>
+                    <select id="link-miller" onchange="updateSystemGraph()">
+                        <option value="node-emma">Emma Watson</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Node 2: Emma Watson -->
+        <div class="node-block" id="node-emma" style="top: 220px; left: 450px;">
+            <div class="node-header">
+                <span>CHARACTER NODE</span>
+                <span style="font-size: 10px; color: #888;">ID: 02</span>
+            </div>
+            <div class="node-body">
+                <div class="control-group">
+                    <label>Identity Name</label>
+                    <input type="text" id="name-emma" value="Emma Watson" oninput="updateSystemGraph()">
+                </div>
+                <div class="control-group">
+                    <label>Volatility Rating</label>
+                    <input type="range" id="vol-emma" min="0.0" max="1.0" step="0.05" value="0.65" oninput="updateSystemGraph()">
                 </div>
                 <div class="control-group">
                     <label>Role Class</label>
-                    <select id="char-role" onchange="updateProfilePayload()">
-                        <option value="protagonist">Protagonist</option>
-                        <option value="antagonist">Antagonist</option>
+                    <select id="role-emma" onchange="updateSystemGraph()">
                         <option value="companion">Companion</option>
+                        <option value="antagonist">Antagonist</option>
                     </select>
-                </div>
-                <div class="control-group">
-                    <label>Volatility Scaling Slider</label>
-                    <input type="range" id="char-volatility" min="0.0" max="1.0" step="0.05" value="0.40" oninput="updateProfilePayload()">
-                </div>
-                <div class="control-group">
-                    <label>Trauma Formula Weight</label>
-                    <input type="range" id="char-trauma" min="0.5" max="3.0" step="0.1" value="1.8" oninput="updateProfilePayload()">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. Real-Time Schema Inspector Side Panel -->
+    <!-- Inspector Output Panel -->
     <div id="inspector-panel">
-        <h3>GCC SCHEMA GENERATOR</h3>
-        <p style="font-size: 12px; color: #888; margin-top: 0;">Adjust sliders and fields on the canvas nodes to view live database manifest compilation updates.</p>
-        <label style="font-size: 11px; font-weight: bold; margin-bottom: 6px; display: block;">COMPILED CHARACTER MATRIX PROFILE</label>
-        <div id="json-output" contenteditable="false"></div>
+        <h3>GCC GRAPH INSPECTOR</h3>
+        <p style="font-size: 11px; color: #888; margin-top: 0;">Maintains explicit synchronization metrics across inter-character timelines.</p>
+        <label style="font-size: 11px; font-weight: bold; margin-bottom: 6px; display: block;">COMPILED SYSTEM MANIFEST</label>
+        <div id="json-output"></div>
     </div>
 
     <script>
-        // Implements simple drag-and-drop mechanics for node blocks
-        const node = document.getElementById('miller-node');
-        let isDragging = false;
-        let offsetX, offsetY;
+        function setupDraggableNode(nodeId) {
+            const el = document.getElementById(nodeId);
+            let isDragging = false;
+            let currentX, currentY, initialX, initialY;
 
-        node.addEventListener('mousedown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-            isDragging = true;
-            offsetX = e.clientX - node.getBoundingClientRect().left;
-            offsetY = e.clientY - node.getBoundingClientRect().top;
-        });
+            el.querySelector('.node-header').addEventListener('mousedown', (e) => {
+                isDragging = true;
+                initialX = e.clientX - el.offsetLeft;
+                initialY = e.clientY - el.offsetTop;
+            });
 
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            node.style.left = `${e.clientX - offsetX}px`;
-            node.style.top = `${e.clientY - offsetY}px`;
-        });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                el.style.left = `${currentX}px`;
+                el.style.top = `${currentY}px`;
+                updateSystemGraph();
+            });
 
-        document.addEventListener('mouseup', () => { isDragging = false; });
-
-        // Compiles visual interface properties down into our rigid GCC backend schema
-        function updateProfilePayload() {
-            const name = document.getElementById('char-name').value;
-            const role = document.getElementById('char-role').value;
-            const volatility = parseFloat(document.getElementById('char-volatility').value);
-            const trauma = parseFloat(document.getElementById('char-trauma').value);
-
-            const profileSchema = {
-                "character_id": name.toLowerCase().replace(/\s+/g, '_'),
-                "biographical_data": {
-                    "name": name,
-                    "assigned_role": role,
-                    "core_flaw": "Dynamic Core Flaw"
-                },
-                "psychological_traits_matrix": {
-                    "isolation_index": 0.5,
-                    "intellectual_curiosity_weight": 0.5,
-                    "volatility_rating": volatility
-                },
-                "physical_integrity_constraints": {
-                    "hand_wrist_joint_integrity": 1.0,
-                    "cardio_reserve_index": 1.0
-                },
-                "narrative_alignment_vectors": {
-                    "starting_stability_index": 1.0,
-                    "manifest_want_declaration": "Generated from visual storyboard node.",
-                    "latent_need_matrix": "Implicit structural optimization driver."
-                },
-                "custom_formula_weights": {
-                    "trauma_multiplier": trauma,
-                    "redemption_multiplier": 0.5
-                }
-            };
-
-            document.getElementById('json-output').innerText = JSON.stringify(profileSchema, null, 2);
+            document.addEventListener('mouseup', () => { isDragging = false; });
         }
 
-        // Initialize output view on workspace startup
-        updateProfilePayload();
-    </script>
-</body>
-</html>
+        setupDraggableNode('node-miller');
+        setupDraggableNode('node-emma');
+
+        function updateSystemGraph() {
+            const nodeA = document.getElementById('node-miller');
+            const nodeB = document.getElementById('node-emma');
+            const line = document.getElementById('connection-line');
+
+            // Draw line center anchor connections between nodes
+            if (nodeA && nodeB && line) {
+                const rA = nodeA.getBoundingClientRect();
+                const rB = nodeB.getBoundingClientRect();
+                const container = document.getElementById('canvas-container').getBoundingClientRect();
+
+                const x1 = (rA.left + rA.width / 2) - container.left;
+                const y1 = (rA.top + rA.height / 2) - container.top;
+                const x2 = (rB.left + rB.width / 2) - container.left;
+                const y2 = (rB.top + rB.height / 2) - container.top;
+
+                if(document.getElementById('link-miller').value !== 'none') {
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.style.display = 'block';
+                } else {
+                    line.style.display = 'none';
+                }
+            }
+
+            // Build aggregated tracking payload
+            const manifest = {
+                "timestamp_epoch": Date.now(),
+                "active_graph_connections": document.getElementById('link-miller').value !== 'none' ? [{ "source": "psycho_town_miller", "target": "psycho_town_emma", "type": "relational_influence_bridge" }] : [],
+                "characters": [
+                    {
+                        "id": "psycho_town_miller",
+                        "name": document.getElementById('name-miller').value,
+                        "volatility": parseFloat(document.getElementById('vol-miller').value)
+                    },
+                    {
+                        "id": "psycho_town_emma",
+                        "name": document.getElementById('name-emma').value,
+                        "role": document.getElementById('role-emma').value,
+                        "volatility": parseFloat(document.getElementById('vol-emma').value)
+                    }
+                ]
+            };
