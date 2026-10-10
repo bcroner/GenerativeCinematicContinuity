@@ -1,0 +1,27 @@
+{
+  "ledger_metadata": {
+    "project_id": "psycho_town_experience",
+    "schema_version": "2026.10.10"
+  },
+  "event_triggers": [
+    {
+      "event_id": "evt_facility_lockdown_04",
+      "description": "User forces an immediate emergency sealing sequence at the main sub-sector facility.",
+      "activation_conditions": {
+        "minimum_current_act": 2,
+        "choice_severity_rating": 2.50
+      },
+      "narrative_formula_impacts": {
+        "target_character_id": "psycho_town_miller",
+        "trauma_index_delta": 0.55,
+        "redemption_index_delta": 0.00
+      },
+      "render_layer_overrides": {
+        "spawn_addressable_asset_ids": [
+          "models/industrial/pipe_heavy_v3.gltf"
+        ],
+        "forced_environment_state": "destabilized_inciting_incident"
+      }
+    }
+  ]
+}
