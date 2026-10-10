@@ -3,12 +3,22 @@
   "biographical_data": {
     "name": "Officer Miller",
     "assigned_role": "protagonist",
-    "core_flaw": "Paranoia"
+    "core_flaw": "Severe Paranoia",
+    "biometric_height_cm": 185
   },
-  "initial_narrative_state": {
+  "psychological_traits_matrix": {
+    "isolation_index": 0.92,
+    "intellectual_curiosity_weight": 0.85,
+    "volatility_rating": 0.40
+  },
+  "physical_integrity_constraints": {
+    "hand_wrist_joint_integrity": 0.75,
+    "cardio_reserve_index": 0.80
+  },
+  "narrative_alignment_vectors": {
     "starting_stability_index": 0.65,
-    "want_vector": "Expose the town conspiracy",
-    "need_vector": "Accept personal loss"
+    "manifest_want_declaration": "Expose the industrial town cover-up and arrest the facility director",
+    "latent_need_matrix": "Confront buried personal grief and achieve absolute self-reliance"
   },
   "custom_formula_weights": {
     "trauma_multiplier": 1.8,
