@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org",
+  "title": "GccCharacterProfile",
+  "description": "Authoritative parameter tracking blueprint defining character traits and emotional vector multipliers for GCC.",
+  "type": "object",
+  "properties": {
+    "character_id": {
+      "description": "Unique catalog look-up identifier string.",
+      "type": "string"
+    },
+    "biographical_data": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "assigned_role": { "type": "string", "enum": ["protagonist", "antagonist", "deuteragonist", "companion"] },
+        "core_flaw": { "type": "string" }
+      },
+      "required": ["name", "assigned_role", "core_flaw"]
+    },
+    "initial_narrative_state": {
+      "type": "object",
+      "properties": {
+        "starting_stability_index": {
+          "description": "Baseline mental composure scaling from 0.0 to 1.0.",
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "want_vector": { "type": "string" },
+        "need_vector": { "type": "string" }
+      },
+      "required": ["starting_stability_index", "want_vector", "need_vector"]
+    },
+    "custom_formula_weights": {
+      "description": "Localized modifier overrides that substitute structural system equations.",
+      "type": "object",
+      "properties": {
+        "trauma_multiplier": {
+          "type": "number",
+          "default": 1.5
+        },
+        "redemption_multiplier": {
+          "type": "number",
+          "default": 0.8
+        }
+      },
+      "required": ["trauma_multiplier", "redemption_multiplier"]
+    }
+  },
+  "required": ["character_id", "biographical_data", "initial_narrative_state", "custom_formula_weights"]
+}
