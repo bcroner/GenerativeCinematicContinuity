@@ -1,0 +1,6 @@
+GenerativeCinematicContinuity/
+├── LICENSE
+├── README.md
+├── gcc_narrative_engine.py
+└── docs/
+    └── formula_guide.md
