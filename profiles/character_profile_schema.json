@@ -1,51 +1,61 @@
 {
   "$schema": "https://json-schema.org",
-  "title": "GccCharacterProfile",
-  "description": "Authoritative parameter tracking blueprint defining character traits and emotional vector multipliers for GCC.",
+  "title": "GccExpandedCharacterProfile",
+  "description": "Comprehensive parameter tracking blueprint defining high-fidelity psychological, physical, and tactical vector arrays for GCC.",
   "type": "object",
   "properties": {
-    "character_id": {
-      "description": "Unique catalog look-up identifier string.",
-      "type": "string"
-    },
+    "character_id": { "type": "string" },
     "biographical_data": {
       "type": "object",
       "properties": {
         "name": { "type": "string" },
         "assigned_role": { "type": "string", "enum": ["protagonist", "antagonist", "deuteragonist", "companion"] },
-        "core_flaw": { "type": "string" }
+        "core_flaw": { "type": "string" },
+        "biometric_height_cm": { "type": "integer", "minimum": 50, "maximum": 300 }
       },
       "required": ["name", "assigned_role", "core_flaw"]
     },
-    "initial_narrative_state": {
+    "psychological_traits_matrix": {
       "type": "object",
       "properties": {
-        "starting_stability_index": {
-          "description": "Baseline mental composure scaling from 0.0 to 1.0.",
-          "type": "number",
-          "minimum": 0.0,
-          "maximum": 1.0
-        },
-        "want_vector": { "type": "string" },
-        "need_vector": { "type": "string" }
+        "isolation_index": { "type": "number", "minimum": 0.0, "maximum": 1.0, "description": "Resilience factor to social detachment." },
+        "intellectual_curiosity_weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "volatility_rating": { "type": "number", "minimum": 0.0, "maximum": 1.0, "description": "Fluctuation amplifier when executing trauma shifts." }
       },
-      "required": ["starting_stability_index", "want_vector", "need_vector"]
+      "required": ["isolation_index", "intellectual_curiosity_weight", "volatility_rating"]
+    },
+    "physical_integrity_constraints": {
+      "type": "object",
+      "properties": {
+        "hand_wrist_joint_integrity": { "type": "number", "minimum": 0.0, "maximum": 1.0, "description": "Structural strain limit tracker." },
+        "cardio_reserve_index": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "required": ["hand_wrist_joint_integrity", "cardio_reserve_index"]
+    },
+    "narrative_alignment_vectors": {
+      "type": "object",
+      "properties": {
+        "starting_stability_index": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "manifest_want_declaration": { "type": "string", "description": "The public objective or narrative mask." },
+        "latent_need_matrix": { "type": "string", "description": "The hidden psychological driver forcing plot collision." }
+      },
+      "required": ["starting_stability_index", "manifest_want_declaration", "latent_need_matrix"]
     },
     "custom_formula_weights": {
-      "description": "Localized modifier overrides that substitute structural system equations.",
       "type": "object",
       "properties": {
-        "trauma_multiplier": {
-          "type": "number",
-          "default": 1.5
-        },
-        "redemption_multiplier": {
-          "type": "number",
-          "default": 0.8
-        }
+        "trauma_multiplier": { "type": "number", "default": 1.5 },
+        "redemption_multiplier": { "type": "number", "default": 0.8 }
       },
       "required": ["trauma_multiplier", "redemption_multiplier"]
     }
   },
-  "required": ["character_id", "biographical_data", "initial_narrative_state", "custom_formula_weights"]
+  "required": [
+    "character_id", 
+    "biographical_data", 
+    "psychological_traits_matrix", 
+    "physical_integrity_constraints", 
+    "narrative_alignment_vectors", 
+    "custom_formula_weights"
+  ]
 }
